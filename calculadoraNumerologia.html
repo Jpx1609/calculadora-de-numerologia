@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cálculo de Numerologia</title>
+    <style>
+        /* Mesmos estilos do código anterior */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #851ec9;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #6c13b6;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f0eaf1;
+            border: 1px solid #e5e2e7;
+            border-radius: 4px;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .result strong {
+            font-weight: bold;
+        }
+
+        .result p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cálculo de Numerologia</h1>
+    <div class="container">
+        <p>Digite o seu nome:</p>
+        <input class="nome" type="text">
+        <p>Digite sua data de nascimento (DD/MM/AAAA):</p>
+        <input class="dtNasc" type="text">
+        <button onclick="tudo()">Enviar</button>
+
+        <div id="result-container" class="result" style="display: none;">
+            <p><strong>Soma do nome:</strong> <span id="soma-nome"></span></p>
+            <p><strong>Soma da data:</strong> <span id="soma-data"></span></p>
+            <p><strong>Soma total:</strong> <span id="soma-total"></span></p>
+            <p><strong>Soma reduzida (único algarismo):</strong> <span id="soma-reduzida"></span></p>
+            <p><strong>Interpretação:</strong> <span id="texto-interpretacao"></span></p>
+        </div>
+    </div>
+
+    <script>
+        function tudo() {
+            let somaNome = nomePorNumero();
+            let somaData = dataPorNumero();
+            let somaTotal = somaNome + somaData;
+            let somaReduzida = reduzirSoma(somaTotal);
+
+            // Obter interpretação baseada na soma reduzida
+            let interpretacao = obterInterpretacao(somaReduzida);
+
+            // Exibe os resultados na tela
+            document.getElementById("soma-nome").textContent = somaNome;
+            document.getElementById("soma-data").textContent = somaData;
+            document.getElementById("soma-total").textContent = somaTotal;
+            document.getElementById("soma-reduzida").textContent = somaReduzida;
+            document.getElementById("texto-interpretacao").textContent = interpretacao;
+
+            // Torna o container visível
+            document.getElementById("result-container").style.display = "block";
+        }
+
+        function nomePorNumero() {
+            let mapaLetras = {
+                "A": 1, "B": 2, "C": 3, "D": 4, "E": 5, "F": 6, "G": 7, "H": 8, "I": 9,
+                "J": 1, "K": 2, "L": 3, "M": 4, "N": 5, "O": 6, "P": 7, "Q": 8, "R": 9,
+                "S": 1, "T": 2, "U": 3, "V": 4, "W": 5, "X": 6, "Y": 7, "Z": 8
+            };
+
+            let nome = document.querySelector(".nome").value
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(/\s+/g, "")
+                .toUpperCase();
+
+            let soma = 0;
+
+            for (let letra of nome) {
+                if (mapaLetras[letra]) {
+                    soma += mapaLetras[letra];
+                }
+            }
+
+            return soma;
+        }
+
+        function dataPorNumero() {
+            let dt = document.querySelector(".dtNasc").value;
+            let dtSemBarra = dt.replace(/\//g, "");
+            let numeros = dtSemBarra.split("").map(Number);
+
+            return numeros.reduce((acumulado, numero) => acumulado + numero, 0);
+        }
+
+        function reduzirSoma(numero) {
+            while (numero > 9) {
+                numero = numero
+                    .toString()
+                    .split("")
+                    .map(Number)
+                    .reduce((acumulado, digito) => acumulado + digito, 0);
+            }
+            return numero;
+        }
+
+        function obterInterpretacao(numero) {
+            const textos = {
+                1: "Número 1: Indica liderança, independência e determinação.",
+                2: "Número 2: Representa cooperação, harmonia e sensibilidade.",
+                3: "Número 3: Está associado à criatividade, expressão e otimismo.",
+                4: "Número 4: Reflete estabilidade, ordem e trabalho árduo.",
+                5: "Número 5: Simboliza liberdade, aventura e mudanças.",
+                6: "Número 6: Relaciona-se ao amor, responsabilidade e equilíbrio.",
+                7: "Número 7: Denota introspecção, espiritualidade e sabedoria.",
+                8: "Número 8: Representa poder, sucesso e realização material.",
+                9: "Número 9: Simboliza altruísmo, compaixão e humanidade."
+            };
+
+            return textos[numero] || "Interpretação não encontrada.";
+        }
+    </script>
+</body>
+</html>
